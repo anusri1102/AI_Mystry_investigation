@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: ai-mystery-room-api
+    runtime: node
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: CLIENT_ORIGIN
+        value: https://ai-mystery-room.vercel.app
+      - key: GEMINI_MODEL
+        value: gemini-3.8-flash
+      - key: IMAGE_PROVIDER
+        value: none
+      - key: VIDEO_PROVIDER
+        value: none
+      - key: MONGODB_URI
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true

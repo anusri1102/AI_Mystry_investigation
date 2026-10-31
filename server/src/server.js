@@ -1,0 +1,5 @@
+import mongoose from 'mongoose';
+import app from './app.js';
+import {env} from './config/env.js';
+async function start(){if(env.nodeEnv==='production'&&(!process.env.SESSION_SECRET||process.env.SESSION_SECRET.length<32)){console.error('SESSION_SECRET must be set to a random value of at least 32 characters in production.');process.exit(1);}if(!env.mongoUri){console.error('MONGODB_URI is required. Configure server/.env before starting the API.');process.exit(1);}await mongoose.connect(env.mongoUri);console.log('MongoDB connected.');const server=app.listen(env.port,()=>console.log(`AI Mystery Room API listening on http://localhost:${env.port}`));server.on('error',async error=>{if(error.code==='EADDRINUSE')console.error(`Port ${env.port} is already in use. Stop the other API process or choose another PORT.`);else console.error(`HTTP server failed to start (${error.code||'unknown error'}).`);await mongoose.disconnect();process.exit(1);});}
+start().catch(error=>{console.error('Server startup failed:',error.message);process.exit(1);});

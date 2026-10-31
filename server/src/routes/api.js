@@ -1,0 +1,10 @@
+import {Router} from 'express';
+import rateLimit from 'express-rate-limit';
+import * as mysteries from '../controllers/mysteryController.js';
+import * as investigations from '../controllers/investigationController.js';
+const router=Router();
+const generationLimit=rateLimit({windowMs:60*60*1000,limit:10,standardHeaders:'draft-7',legacyHeaders:false,message:{message:'You have reached the case generation limit. Please try again later.'}});
+const wrap=fn=>(req,res,next)=>Promise.resolve(fn(req,res,next)).catch(next);
+router.post('/mysteries',generationLimit,wrap(mysteries.create));router.get('/mysteries',wrap(mysteries.history));router.get('/mysteries/:caseId/status',wrap(mysteries.status));router.get('/mysteries/:caseId/evidence',wrap(mysteries.evidence));router.get('/mysteries/:caseId/evidence/:evidenceId',wrap(mysteries.oneEvidence));router.post('/mysteries/:caseId/evidence/:evidenceId/view',wrap(investigations.markViewed));router.get('/mysteries/:caseId',wrap(mysteries.getOne));
+router.post('/investigations',wrap(investigations.create));router.get('/investigations/:investigationId',wrap(investigations.get));router.patch('/investigations/:investigationId/notes',wrap(investigations.notes));router.post('/investigations/:investigationId/accusation',wrap(investigations.accusation));router.get('/investigations/:investigationId/verdict',wrap(investigations.verdict));
+export default router;

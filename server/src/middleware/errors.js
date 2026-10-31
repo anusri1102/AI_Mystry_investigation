@@ -1,0 +1,3 @@
+import {ZodError} from 'zod';
+export function notFound(req,res){res.status(404).json({message:'That endpoint was not found.'});}
+export function errorHandler(error,req,res,next){if(res.headersSent)return next(error);if(error instanceof ZodError)return res.status(400).json({message:'Please check the submitted information.',issues:error.issues.map(i=>({path:i.path.join('.'),message:i.message}))});const status=error.status||500;if(status>=500)console.error(`API request failed (${req.method} ${req.path}, ${status}).`);res.status(status).json({message:status>=500?'The service could not complete that request. Please try again.':error.message});}

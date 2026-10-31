@@ -1,0 +1,1 @@
+export const verdictPrompt=({explanation,selectedName,correctName,userExplanation})=>`In one sentence, explain why ${selectedName} was not responsible. Case solution: ${explanation}. Player's reasoning: ${userExplanation||'(none)'}. Avoid new facts.`;
